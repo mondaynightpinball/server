@@ -12,17 +12,34 @@ const serverToggle = require('./lib/server-toggle.js');
 
 const url = `http://localhost:${process.env.PORT}`;
 
-const mockUser = require('./lib/mock-user.js');
+// const mockUser = require('./lib/mock-user.js');
+const exampleLeague = require('./data/example-league.json');
 
 describe('League Routes', function() {
   before( done => serverToggle.start(server, done));
-  // How do we get a root user?
+  before( done => {
+    require('./lib/mock-root.js')()
+    .then( user => {
+      this.root = user;
+      done();
+    });
+  });
+  after(require('./lib/clean-db.js'));
+  after( done => serverToggle.stop(server, done));
 
   describe('POST /api/league', () => {
     describe('with root auth and valid body', () => {
       it('should create a new league, returning 201', done => {
-        expect(true).to.equal(false);
-        done();
+        request.post(`${url}/api/league`)
+        .set({
+          Authorization: `Bearer ${this.root.token}`
+        })
+        .send(exampleLeague)
+        .end( (err, res) => {
+          expect(res.status).to.equal(201);
+          expect(res.body.name).to.equal(exampleLeague.name);
+          done();
+        });
       });
     }); // with root auth and valid body
 

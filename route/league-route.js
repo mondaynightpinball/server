@@ -15,7 +15,7 @@ router.post('/api/league', bearerAuth, jsonParser, function(req, res, next) {
 
   //TODO: Verify that req.user is a root admin
   new League(req.body).save()
-  .then( league => res.json(league))
+  .then( league => res.status(201).json(league))
   .catch(next);
 });
 
