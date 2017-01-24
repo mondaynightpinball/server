@@ -12,7 +12,7 @@ const serverToggle = require('./lib/server-toggle.js');
 
 const url = `http://localhost:${process.env.PORT}`;
 
-// const mockUser = require('./lib/mock-user.js');
+const mockUser = require('./lib/mock-user.js');
 const exampleLeague = require('./data/example-league.json');
 
 describe('League Routes', function() {
@@ -21,6 +21,13 @@ describe('League Routes', function() {
     require('./lib/mock-root.js')()
     .then( user => {
       this.root = user;
+      done();
+    });
+  });
+  before( done => {
+    mockUser()
+    .then( user => {
+      this.rando = user;
       done();
     });
   });
@@ -43,7 +50,21 @@ describe('League Routes', function() {
       });
     }); // with root auth and valid body
 
-    //TODO: Error tests
+    describe('as non-root user', () => {
+      it('should return a 403, forbidden', done => {
+        request.post(`${url}/api/league`)
+        .set({
+          Authorization: `Bearer ${this.rando.token}`
+        })
+        .send(exampleLeague)
+        .end( (err, res) => {
+          expect(res.status).to.equal(403);
+          // TODO: Anything else to expect?
+          done();
+        });
+      });
+    }); // as non-root user
+    //TODO: More Error tests
   }); // POST /api/league
 
   describe('GET /api/league/:id', () => {

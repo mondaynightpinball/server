@@ -13,6 +13,10 @@ const router = module.exports = new Router();
 router.post('/api/league', bearerAuth, jsonParser, function(req, res, next) {
   debug('POST /api/league');
 
+  if(req.user.username !== 'root') {
+    return next(createError(403, 'forbidden'));
+  }
+
   //TODO: Verify that req.user is a root admin
   new League(req.body).save()
   .then( league => res.status(201).json(league))
