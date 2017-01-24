@@ -6,6 +6,7 @@ const debug = require('debug')('mnp:league-route');
 const bearerAuth = require('../lib/bearer-auth-middleware.js');
 const jsonParser = require('body-parser').json();
 
+const User = require('../model/user.js');
 const League = require('../model/league.js');
 
 const router = module.exports = new Router();
@@ -34,20 +35,33 @@ router.get('/api/league/:id', function(req, res, next) {
 //TODO: Do we need PUT or DELETE in the API?
 //      I'm saying no for right now.
 
-router.post('/api/league/:id/admin', bearerAuth, jsonParser, function(req, res, next) {
-  debug('POST /api/league/:id/admin');
+router.put('/api/league/:id/admin', bearerAuth, jsonParser, function(req, res, next) {
+  debug('PUT /api/league/:id/admin');
 
-  //TODO: Assert that req.user is root or league admin.
+  let tempLeague;
   League.findById(req.params.id)
   .catch( () => next(createError(404, 'not found')))
   .then( league => {
+    if( !(
+      req.user.username === 'root' ||
+      league.admins.indexOf(req.user._id) !== -1)
+    ) {
+      return next(createError(403, 'forbidden'));
+    }
+
     if(league.admins.indexOf(req.body.userId) !== -1) {
       return next(createError(400, 'already have requested admin'));
     }
-    league.admins.push(req.body.userId);
-    return league.save();
+
+    tempLeague = league;
+    return User.findById(req.body.userId);
   })
-  .then( () => res.status(201).send('admin added to league'))
+  .catch( () => next(createError(400, 'unknown user')))
+  .then( () => {
+    tempLeague.admins.push(req.body.userId);
+    return tempLeague.save();
+  })
+  .then( () => res.send('admin added to league'))
   .catch(next);
 });
 
