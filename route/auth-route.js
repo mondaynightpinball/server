@@ -24,6 +24,8 @@ router.post('/api/signup', jsonParser, function(req, res, next) {
   .catch(next);
 });
 
+//NOTE: Basic Auth is pretty weak, but since we run on https,
+//      it's not too terrible.
 router.get('/api/signin', basicAuth, function(req, res, next) {
   debug('GET /api/signin');
 

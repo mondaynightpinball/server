@@ -53,6 +53,7 @@ gameSchema.methods.reportScores = function(playerId, scores) {
   //TODO: Only overwrite non-zero values from scores?
   this.scores = scores;
 
+  //TODO: Shouldn't we return save();
   return Promise.resolve(this);
 };
 
