@@ -5,22 +5,25 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 mongoose.Promise = Promise;
 const Schema = mongoose.Schema;
+const ObjectId = Schema.Types.ObjectId;
 const debug = require('debug')('mnp:game');
 
 const gameSchema = Schema({
-  // userId is who created the game.
-  userId: { type: Schema.Types.ObjectId, required: true },
-  created: { type: Date, required: true, default: Date.now },
-  //TODO: Q: Is it possible to specify a field that is
-  //          multiple choice?
-  //TODO: Maybe have type be Number, but we should have constants to
-  //      represent the discrete values.
-  type: { type: String, required: true },
-  // machine: { type: Schema.Types.ObjectId, ref: 'machine', required: true },
+  // userId is no longer needed
+  // userId: { type: ObjectId, required: true },
+  created: { type: Date, default: Date.now },
+  type: {
+    type: String,
+    required: true,
+    enum: ['singles', 'doubles', 'shared']
+  },
+  matchId: { type: ObjectId },
+  round: { type: Number, min: 1, max: 5, default: 1 },
+  machine: { type: ObjectId, ref: 'machine', required: true },
   // venue: { type: Schema.Types.ObjectId, ref: 'venue', required: true },
   players: [{ type: Schema.Types.ObjectId }], // Size based on type
-  //TODO:should scores be an object { 1: Number, 2: Number, 3: Number, 4: Number }
-  scores: [{ type: Number }]
+  scores: [{ type: Number }],
+  points: [{ type: Number }]
 });
 
 //TODO: Who is allowed to call this? Add a reportedBy param?
