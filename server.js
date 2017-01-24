@@ -19,6 +19,7 @@ app.use(require('./route/auth-route.js'));
 app.use(require('./route/pic-route.js'));
 app.use(require('./route/game-route.js'));
 app.use(require('./route/league-route.js'));
+app.use(require('./route/season-route.js'));
 app.use(require('./lib/error-middleware.js'));
 
 const server = module.exports = app.listen(PORT, () => {

@@ -49,6 +49,7 @@ router.put('/api/league/:id/admin', bearerAuth, jsonParser, function(req, res, n
       return next(createError(403, 'forbidden'));
     }
 
+    //TODO: Should we silently just say ok?
     if(league.admins.indexOf(req.body.userId) !== -1) {
       return next(createError(400, 'already have requested admin'));
     }

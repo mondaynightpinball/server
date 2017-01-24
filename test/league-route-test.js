@@ -1,6 +1,6 @@
 'use strict';
 
-// const debug = require('debug')('mnp:game-route-test');
+// const debug = require('debug')('mnp:league-route-test');
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
