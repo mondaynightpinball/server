@@ -22,6 +22,7 @@ app.use(require('./route/game-route.js'));
 app.use(require('./route/league-route.js'));
 app.use(require('./route/season-route.js'));
 app.use(require('./route/venue-route.js'));
+app.use(require('./route/machine-route.js'));
 
 app.use(require('./lib/error-middleware.js'));
 

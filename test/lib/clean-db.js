@@ -9,6 +9,7 @@ const Pic = require('../../model/pic.js');
 const Venue = require('../../model/venue.js');
 const Team = require('../../model/team.js');
 const Match = require('../../model/match.js');
+const Machine = require('../../model/machine.js');
 const Promise = require('bluebird');
 
 const del = require('del');
@@ -31,6 +32,7 @@ module.exports = function() {
     Match.remove({}),
     Game.remove({}),
     Pic.remove({}),
+    Machine.remove({}),
     Promise.resolve(del(`${dataDir}/*`))
   ]);
 };
