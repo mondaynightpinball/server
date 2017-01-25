@@ -18,9 +18,7 @@ router.post('/api/venue', bearerAuth, jsonParser, function(req, res, next) {
   //be bound to a league operation.
 
   //TODO: Who can make a venue?
-  if(req.user.username !== 'root') {
-    return next(createError(403, 'forbidden'));
-  }
+  if(!isRoot(req)) return next(createError(403, 'forbidden'));
 
   //TODO: Is there anything we need to add to req.body?
 
@@ -43,17 +41,50 @@ router.get('/api/venue/:id', function(req, res, next) {
 router.put('/api/venue/:id/machine', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT /api/venue/:id/machine');
 
-  next();
+  if(!isRoot(req)) return next(createError(403, 'forbidden'));
+
+  Venue.findById(req.params.id)
+  .then( venue => {
+    if(!venue) return next(createError(404, 'not found'));
+    if(venue.machines.indexOf(req.body.machineId) !== -1) {
+      return res.status(202).json(venue);
+    }
+    venue.machines.push(req.body.machineId);
+    return venue.save();
+  })
+  .then( venue => res.status(202).json(venue))
+  .catch(next);
 });
 
 router.delete('/api/venue/:id', bearerAuth, function(req, res, next) {
   debug('DELETE /api/venue/:id');
 
-  next();
+  if(!isRoot(req)) return next(createError(403, 'forbidden'));
+
+  Venue.findByIdAndRemove(req.params.id)
+  .then( () => res.status(204).send())
+  .catch(next); // TODO: 404 ?
 });
 
 router.delete('/api/venue/:id/machine/:machineId', bearerAuth, function(req, res, next) {
   debug('DELETE /api/venue/:id/machine/:machineId');
 
-  next();
+  if(!isRoot(req)) return next(createError(403, 'forbidden'));
+
+  Venue.findById(req.params.id)
+  .then( venue => {
+    if(!venue) return next(createError(404, 'venue not found'));
+    let index = venue.machines.indexOf(req.params.machineId);
+    if(index !== -1) {
+      venue.machines.splice(index, 1);
+      return venue.save();
+    }
+    return next(createError(400, 'venue does not have that machine'));
+  })
+  .then( () => res.status(204).send('removed machine from venue'))
+  .catch(next);
 });
+
+function isRoot(req) {
+  return req.user.username === 'root';
+}

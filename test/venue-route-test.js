@@ -1,11 +1,13 @@
 'use strict';
 
-// const debug = require('debug')('mnp:venue-route-test');
+const debug = require('debug')('mnp:venue-route-test');
 const expect = require('chai').expect;
 const request = require('superagent');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 mongoose.Promise = Promise;
+
+const Machine = require('../model/machine.js');
 
 const server = require('../server.js');
 const serverToggle = require('./lib/server-toggle.js');
@@ -79,4 +81,31 @@ describe('Venue Routes', function() {
       });
     }); // valid id
   }); // GET /api/venue/:id
+
+  describe('PUT /api/venue/:id/machine', () => {
+    before( done => {
+      new Machine({
+        name: 'Attack From Mars',
+        code: 'AFM'
+      }).save()
+      .then( machine => {
+        this.machine = machine;
+        done();
+      });
+    });
+    describe('as root user and valid machine', () => {
+      it('should add the machine to the venue', done => {
+        request.put(`${url}/api/venue/${this.venue._id}/machine`)
+        .set({ Authorization: `Bearer ${this.root.token}`})
+        .send({ machineId: this.machine._id.toString() })
+        .end( (err, res) => {
+          expect(res.status).to.equal(202);
+          debug(res.body);
+          expect(res.body.machines).to.be.an('array');
+          expect(res.body.machines[0]).to.equal(this.machine._id.toString());
+          done();
+        });
+      });
+    }); // as root and valid machine
+  }); // PUT /api/venue/:id/machine
 });
