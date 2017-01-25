@@ -78,20 +78,3 @@ describe('Machine Routes', function() {
     }); // as root user
   }); // DELETE /api/machine/:id
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
