@@ -31,3 +31,11 @@ router.get('/api/machine/:id', function(req, res, next) {
   })
   .catch( () => next(createError(404, 'not found or bad id')));
 });
+
+router.delete('/api/machine/:id', bearerAuth, function(req, res, next) {
+  debug('DELETE /api/machine/:id');
+
+  Machine.findByIdAndRemove(req.params.id)
+  .then( () => res.status(204).send())
+  .catch(next);
+});

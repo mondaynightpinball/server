@@ -43,6 +43,7 @@ describe('Machine Routes', function() {
         .end( (err, res) => {
           expect(res.status).to.equal(201);
           expect(res.body.code).to.equal('EBD');
+          this.machine = res.body;
           done();
         });
       });
@@ -63,6 +64,19 @@ describe('Machine Routes', function() {
       });
     }); // unauthorized and valid
   }); // POST /api/machine
+
+  describe('DELETE /api/machine/:id', () => {
+    describe('as root user', () => {
+      it('should remove the machine and return 204', done => {
+        request.delete(`${url}/api/machine/${this.machine._id}`)
+        .set({ Authorization: `Bearer ${this.root.token}`})
+        .end( (err, res) => {
+          expect(res.status).to.equal(204);
+          done();
+        });
+      });
+    }); // as root user
+  }); // DELETE /api/machine/:id
 });
 
 
