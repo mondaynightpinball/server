@@ -81,7 +81,7 @@ router.delete('/api/venue/:id/machine/:machineId', bearerAuth, function(req, res
     }
     return next(createError(400, 'venue does not have that machine'));
   })
-  .then( () => res.status(204).send('removed machine from venue'))
+  .then( () => res.status(202).send('removed machine from venue'))
   .catch(next);
 });
 
