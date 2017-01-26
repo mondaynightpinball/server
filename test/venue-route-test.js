@@ -108,4 +108,28 @@ describe('Venue Routes', function() {
       });
     }); // as root and valid machine
   }); // PUT /api/venue/:id/machine
+
+  describe('DELETE /api/venue/:id/machine/:machineId', () => {
+    describe('as unauthorized user and valid ids', () => {
+      it('should return 403, forbidden', done => {
+        request.delete(`${url}/api/venue/${this.venue._id}/machine/${this.machine._id}`)
+        .set({ Authorization: `Bearer ${this.rando.token}`})
+        .end( (err, res) => {
+          expect(res.status).to.equal(403);
+          done();
+        });
+      });
+    }); // as unauthorized user an valid ids
+
+    describe('with root auth and valid ids', () => {
+      it('should return 202, modified', done => {
+        request.delete(`${url}/api/venue/${this.venue._id}/machine/${this.machine._id}`)
+        .set({ Authorization: `Bearer ${this.root.token}`})
+        .end( (err, res) => {
+          expect(res.status).to.equal(202);
+          done();
+        });
+      });
+    }); // with root auth and valid ids
+  }); // DELETE /api/venue/:id/machine/:machineId
 });
