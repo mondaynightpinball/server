@@ -16,6 +16,16 @@ mongoose.connect(process.env.MONGODB_URI);
 app.use(require('cors')());
 app.use(require('morgan')('dev'));
 
+// //This did not work like we learned for angular
+//    Additionally, the node shell shows nothing for
+//    require.context
+//  Maybe it's a webpack add-on.
+// let context = require.context('./route/', true, /\.js$/);
+// context.keys().forEach( key => {
+//   // app.use()
+//   console.log('key:',key);
+// });
+
 app.use(require('./route/auth-route.js'));
 app.use(require('./route/pic-route.js'));
 app.use(require('./route/game-route.js'));
@@ -23,6 +33,7 @@ app.use(require('./route/league-route.js'));
 app.use(require('./route/season-route.js'));
 app.use(require('./route/venue-route.js'));
 app.use(require('./route/machine-route.js'));
+app.use(require('./route/team-route.js'));
 
 app.use(require('./lib/error-middleware.js'));
 

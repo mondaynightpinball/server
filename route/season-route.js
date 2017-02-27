@@ -43,3 +43,19 @@ router.get('/api/season/:id', function(req, res, next) {
   // .catch(next);
   .catch( () => next(createError(404, 'not found')));
 });
+
+router.put('/api/season/:id/teams', bearerAuth, jsonParser, function(req, res, next) {
+  debug('PUT /api/season/:id/teams');
+
+  Season.findById(req.params.id)
+  .then( season => {
+    if(!season) return next(createError(404, 'not found'));
+    if(season.teams.indexOf(req.body.teamId) !== -1) {
+      return res.status(202).json(season);
+    }
+    season.teams.push(req.body.teamId);
+    return season.save();
+  })
+  .then( season => res.status(202).json(season))
+  .catch(next);
+});
