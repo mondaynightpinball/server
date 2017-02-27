@@ -38,6 +38,16 @@ router.get('/api/venue/:id', function(req, res, next) {
   .catch(next);
 });
 
+router.delete('/api/venue/:id', bearerAuth, function(req, res, next) {
+  debug('DELETE /api/venue/:id');
+
+  if(!isRoot(req)) return next(createError(403, 'forbidden'));
+
+  Venue.findByIdAndRemove(req.params.id)
+  .then( () => res.status(204).send())
+  .catch(next); // TODO: 404 ?
+});
+
 router.put('/api/venue/:id/machine', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT /api/venue/:id/machine');
 
@@ -54,16 +64,6 @@ router.put('/api/venue/:id/machine', bearerAuth, jsonParser, function(req, res, 
   })
   .then( venue => res.status(202).json(venue))
   .catch(next);
-});
-
-router.delete('/api/venue/:id', bearerAuth, function(req, res, next) {
-  debug('DELETE /api/venue/:id');
-
-  if(!isRoot(req)) return next(createError(403, 'forbidden'));
-
-  Venue.findByIdAndRemove(req.params.id)
-  .then( () => res.status(204).send())
-  .catch(next); // TODO: 404 ?
 });
 
 router.delete('/api/venue/:id/machine/:machineId', bearerAuth, function(req, res, next) {
@@ -85,6 +85,4 @@ router.delete('/api/venue/:id/machine/:machineId', bearerAuth, function(req, res
   .catch(next);
 });
 
-function isRoot(req) {
-  return req.user.username === 'root';
-}
+function isRoot(req) { return req.user.username === 'root'; }
