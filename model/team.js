@@ -20,8 +20,14 @@ const teamSchema = Schema({
 
 teamSchema.methods.addPlayer = function(player) {
   debug('player:',player);
-  //TODO: Use role to potentially set captain or co-captain.
-  //TODO: Check for existence of the player already.
+  if(player.role === 'captain') this.captain = player.playerId;
+  if(player.role === 'co-captain') this.coCaptain = player.playerId;
+
+  if(this.roster.indexOf(player.playerId) !== -1) {
+    return Promise.reject('Already have player on team');
+  }
+
+
   this.roster.push(player.playerId);
   return this.save();
 };

@@ -95,5 +95,9 @@ describe('Team Routes', function() {
         });
       });
     }); // valid request
+
+    //TODO: Test for roles
+    //TODO: Test for redundant add
+    
   }); // PUT /api/team/:id/player
 });
