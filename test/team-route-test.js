@@ -79,4 +79,21 @@ describe('Team Routes', function() {
       });
     }); //valid id
   }); // GET /api/team/:id
+
+  describe('PUT /api/team/:id/player', () => {
+    describe('with valid auth and valid player', () => {
+      it('should add a player to the team', done => {
+        request.put(`${url}/api/team/${this.team._id}/player`)
+        .set({ Authorization: `Bearer ${this.root.token}`})
+        .send({ playerId: this.rando._id, role: 'player' })
+        .end( (err, res) => {
+          debug(res.body);
+          expect(res.status).to.equal(202);
+          expect(res.body.roster.length).to.equal(1);
+          expect(res.body.roster[0]).to.equal(this.rando._id.toString());
+          done();
+        });
+      });
+    }); // valid request
+  }); // PUT /api/team/:id/player
 });

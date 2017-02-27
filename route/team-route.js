@@ -33,4 +33,15 @@ router.get('/api/team/:id', function(req, res, next) {
   .catch(next);
 });
 
+router.put('/api/team/:id/player', bearerAuth, jsonParser, function(req, res, next) {
+  debug('PUT /api/team/:id/player');
+
+  Team.findById(req.params.id)
+  .then( team => {
+    return team.addPlayer(req.body);
+  })
+  .then( team => res.status(202).json(team))
+  .catch(next);
+});
+
 function isRoot(req) { return req.user.username === 'root'; }

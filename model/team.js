@@ -1,5 +1,6 @@
 'use strict';
 
+const debug = require('debug')('mnp:team');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 mongoose.Promise = Promise;
@@ -16,5 +17,13 @@ const teamSchema = Schema({
   coCaptain: { type: ObjectId, ref: 'player' },
   roster: [{ type: ObjectId, ref: 'player' }]
 });
+
+teamSchema.methods.addPlayer = function(player) {
+  debug('player:',player);
+  //TODO: Use role to potentially set captain or co-captain.
+  //TODO: Check for existence of the player already.
+  this.roster.push(player.playerId);
+  return this.save();
+};
 
 module.exports = mongoose.model('team', teamSchema);
