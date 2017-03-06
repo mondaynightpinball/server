@@ -36,6 +36,9 @@ router.get('/api/team/:id', function(req, res, next) {
 router.put('/api/team/:id/player', bearerAuth, jsonParser, function(req, res, next) {
   debug('PUT /api/team/:id/player');
 
+  //TODO: isRoot -> isAuth
+  if(!isRoot(req)) return next(createError(403, 'forbidden'));
+
   Team.findById(req.params.id)
   .then( team => {
     return team.addPlayer(req.body);

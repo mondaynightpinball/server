@@ -146,8 +146,21 @@ describe('Team Routes', function() {
           expect(res.body.roster[2]).to.equal(this.player._id.toString());
           done();
         });
-      }); // root + co-captain
+      }); // root + player
     }); // valid request
+
+    describe('with rando auth', () => {
+      it('should return a 403', done => {
+        request.put(`${url}/api/team/${this.team._id}/player`)
+        .set({ Authorization: `Bearer ${this.rando.token}`})
+        .send({ playerId: this.rando._id, role: 'player' })
+        .end( (err, res) => {
+          debug(res.body);
+          expect(res.status).to.equal(403);
+          done();
+        });
+      }); // rando + rando
+    }); // invalid request
 
     //TODO: Test for redundant add
 
