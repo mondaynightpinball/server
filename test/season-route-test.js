@@ -14,6 +14,7 @@ const url = `http://localhost:${process.env.PORT}`;
 
 const League = require('../model/league.js');
 const Team = require('../model/team.js');
+const Venue = require('../model/venue.js');
 const mockUser = require('./lib/mock-user.js');
 const exampleLeague = require('./data/example-league.json');
 
@@ -100,6 +101,33 @@ describe('Season Routes', function() {
           debug('STATUS:',res.status);
           debug('BODY:',res.body);
           expect(res.body.teams[0]).to.equal(this.team._id.toString());
+          done();
+        });
+      });
+    });
+  }); // PUT /api/season/:id/team
+
+  describe('PUT /api/season/:id/venue', () => {
+    before( done => {
+      new Venue({
+        name: 'Example Venue',
+        code: 'EXV'
+      }).save()
+      .then( venue => {
+        debug(venue);
+        this.venue = venue;
+        done();
+      });
+    });
+    describe('as admin and valid venue id', () => {
+      it('should add the venue to the season', done => {
+        request.put(`${url}/api/season/${this.season._id}/venue`)
+        .set({ Authorization: `Bearer ${this.admin.token}` })
+        .send({ venueId: this.venue._id })
+        .end( (err, res) => {
+          debug('STATUS:',res.status);
+          debug('BODY:',res.body);
+          expect(res.body.venues[0]).to.equal(this.venue._id.toString());
           done();
         });
       });
