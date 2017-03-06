@@ -149,6 +149,25 @@ describe('Team Routes', function() {
       }); // root + player
     }); // valid request
 
+    //TODO: Improve the response for add of existing player.
+    describe('with valid auth and existing player', () => {
+      it('should NOT add player to the team', done => {
+        request.put(`${url}/api/team/${this.team._id}/player`)
+        .set({ Authorization: `Bearer ${this.root.token}`})
+        .send({ playerId: this.player._id, role: 'player' })
+        .end( (err, res) => {
+          debug('BODY:',res.body);
+          debug('TEXT:',res.text);
+          debug('MSG:',res.statusMessage);
+          expect(res.status).to.equal(500);
+          //TODO: Confirm that team object is the same.
+          //      Since the error doesn't currently return
+          //      the team on a redundant call, we have to think about things.
+          done();
+        });
+      }); // root + player
+    }); // valid request
+
     describe('with rando auth', () => {
       it('should return a 403', done => {
         request.put(`${url}/api/team/${this.team._id}/player`)
@@ -161,8 +180,6 @@ describe('Team Routes', function() {
         });
       }); // rando + rando
     }); // invalid request
-
-    //TODO: Test for redundant add
 
   }); // PUT /api/team/:id/player
 });
