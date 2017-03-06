@@ -51,11 +51,8 @@ describe('Team Routes', function() {
   });
 
   before( done => {
-    mockUsers.call(this, [
-      'captain','cocap','player1','player2','player3','player4','rando'
-    ])
-    .then(done)
-    .catch(done);
+    mockUsers.call(this, ['captain','cocap','player','rando'] )
+    .then(done).catch(done);
   });
   after(require('./lib/clean-db.js'));
   after( done => serverToggle.stop(server, done));
@@ -115,10 +112,43 @@ describe('Team Routes', function() {
           expect(res.body.roster[0]).to.equal(this.captain._id.toString());
           done();
         });
-      }); // rando
+      }); // root + captain
     }); // valid request
 
-    //TODO: Test for roles
+    //TODO: Test who is allowed to add players.
+    //      MNP standard is league admin for roster,
+    //      captain or higher for matches.
+
+    describe('with valid auth and valid co-captain', () => {
+      it('should add a co-captain to the team', done => {
+        request.put(`${url}/api/team/${this.team._id}/player`)
+        .set({ Authorization: `Bearer ${this.root.token}`})
+        .send({ playerId: this.cocap._id, role: 'co-captain' })
+        .end( (err, res) => {
+          debug(res.body);
+          expect(res.status).to.equal(202);
+          expect(res.body.roster.length).to.equal(2); //TODO: Beware counting each one.
+          expect(res.body.roster[1]).to.equal(this.cocap._id.toString());
+          done();
+        });
+      }); // root + co-captain
+    }); // valid request
+
+    describe('with valid auth and valid player', () => {
+      it('should add a player to the team', done => {
+        request.put(`${url}/api/team/${this.team._id}/player`)
+        .set({ Authorization: `Bearer ${this.root.token}`})
+        .send({ playerId: this.player._id, role: 'player' })
+        .end( (err, res) => {
+          debug(res.body);
+          expect(res.status).to.equal(202);
+          expect(res.body.roster.length).to.equal(3); //TODO: Beware counting each one.
+          expect(res.body.roster[2]).to.equal(this.player._id.toString());
+          done();
+        });
+      }); // root + co-captain
+    }); // valid request
+
     //TODO: Test for redundant add
 
   }); // PUT /api/team/:id/player
