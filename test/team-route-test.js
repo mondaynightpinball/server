@@ -55,36 +55,8 @@ describe('Team Routes', function() {
       'captain','cocap','player1','player2','player3','player4','rando'
     ])
     .then(done)
-    // .then( () => {
-    //   debug('captain:',this.captain);
-    //   done();
-    // })
     .catch(done);
   });
-
-/*
-  before( done => {
-    require('./lib/mock-user.js')()
-    .then( user => {
-      this.rando = user;
-      done();
-    });
-  });
-  before( done => {
-    require('./lib/mock-user.js')()
-    .then( user => {
-      this.captain = user;
-      done();
-    });
-  });
-  before( done => {
-    require('./lib/mock-user.js')()
-    .then( user => {
-      this.player = user;
-      done();
-    });
-  });
-*/
   after(require('./lib/clean-db.js'));
   after( done => serverToggle.stop(server, done));
 
