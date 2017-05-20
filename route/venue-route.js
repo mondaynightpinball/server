@@ -38,6 +38,8 @@ router.get('/api/venue/:id', function(req, res, next) {
   .catch(next);
 });
 
+//TODO: router.put()
+
 router.delete('/api/venue/:id', bearerAuth, function(req, res, next) {
   debug('DELETE /api/venue/:id');
 
