@@ -9,8 +9,7 @@ const ObjectId = Schema.Types.ObjectId;
 const debug = require('debug')('mnp:game');
 
 const gameSchema = Schema({
-  // userId is no longer needed
-  // userId: { type: ObjectId, required: true },
+  userId: { type: ObjectId, required: true },
   created: { type: Date, default: Date.now },
   type: {
     type: String,
@@ -19,9 +18,10 @@ const gameSchema = Schema({
   },
   matchId: { type: ObjectId },
   round: { type: Number, min: 1, max: 5, default: 1 },
-  machine: { type: ObjectId, ref: 'machine', required: true },
+  machine: { type: ObjectId, ref: 'machine' },
+  //TODO: Bring back venue?
   // venue: { type: Schema.Types.ObjectId, ref: 'venue', required: true },
-  players: [{ type: Schema.Types.ObjectId }], // Size based on type
+  players: [{ type: ObjectId }], // Size based on type
   scores: [{ type: Number }],
   points: [{ type: Number }]
 });

@@ -17,7 +17,7 @@ router.post('/api/game', bearerAuth, jsonParser, function(req, res, next) {
   debug('POST /api/game');
 
   req.body.userId = req.user._id;
-  req.body.players = [req.user._id]; //If you create a game, you are in it...for now.
+  // req.body.players = [req.user._id]; //If you create a game, you are in it...for now.
   new Game(req.body).save()
   .then( game => res.json(game))
   .catch(next);
@@ -37,7 +37,11 @@ router.put('/api/game/:id/join', bearerAuth, jsonParser, function(req, res, next
 
   Game.findById(req.params.id)
   .catch( () => next(createError(404, 'not found')))
-  .then( game => game.join(req.user._id))
+  .then( game => {
+    if(!game) return next(createError(404, 'not found'));
+    return game.join(req.user._id);
+  })
+  // .then( game => game.join(req.user._id))
   .then( game => game.save())
   .then( game => res.json(game))
   .catch(next); //TODO: createError?

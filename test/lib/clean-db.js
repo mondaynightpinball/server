@@ -6,6 +6,10 @@ const League = require('../../model/league.js');
 const Season = require('../../model/season.js');
 const Game = require('../../model/game.js');
 const Pic = require('../../model/pic.js');
+const Venue = require('../../model/venue.js');
+const Team = require('../../model/team.js');
+const Match = require('../../model/match.js');
+const Machine = require('../../model/machine.js');
 const Promise = require('bluebird');
 
 const del = require('del');
@@ -23,8 +27,12 @@ module.exports = function() {
     User.remove({}),
     League.remove({}),
     Season.remove({}),
+    Venue.remove({}),
+    Team.remove({}),
+    Match.remove({}),
     Game.remove({}),
     Pic.remove({}),
+    Machine.remove({}),
     Promise.resolve(del(`${dataDir}/*`))
   ]);
 };

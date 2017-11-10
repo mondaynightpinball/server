@@ -55,11 +55,9 @@ describe('Game Routes', function() {
           Authorization: `Bearer ${player.token}`
         })
         .end( (err, res) => {
-          // console.log(res.body);
           let date = new Date(res.body.created).toString();
           expect(date).to.not.equal('Invalid Date');
           expect(res.body.userId).to.equal(player._id.toString());
-          expect(res.body.players[0]).to.equal(player._id.toString());
           done();
         });
       });

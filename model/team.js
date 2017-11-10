@@ -1,5 +1,6 @@
 'use strict';
 
+const debug = require('debug')('mnp:team');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 mongoose.Promise = Promise;
@@ -16,5 +17,19 @@ const teamSchema = Schema({
   coCaptain: { type: ObjectId, ref: 'player' },
   roster: [{ type: ObjectId, ref: 'player' }]
 });
+
+teamSchema.methods.addPlayer = function(player) {
+  debug('player:',player);
+  if(player.role === 'captain') this.captain = player.playerId;
+  if(player.role === 'co-captain') this.coCaptain = player.playerId;
+
+  if(this.roster.indexOf(player.playerId) !== -1) {
+    return Promise.reject('Already have player on team');
+  }
+
+
+  this.roster.push(player.playerId);
+  return this.save();
+};
 
 module.exports = mongoose.model('team', teamSchema);
